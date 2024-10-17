@@ -71,9 +71,9 @@ func main() {
 				}
 				res := exist1(tree, b)
 				if res != nil {
-					fmt.Println("Integer %d is exist", b)
+					fmt.Printf("Integer %d is exist\n", b)
 				} else {
-					fmt.Println("Integer %d is not exist", b)
+					fmt.Printf("Integer %d is not exist\n", b)
 				}
 			case 3:
 				var b int
@@ -148,6 +148,14 @@ func main() {
 			_, err1 := fmt.Scanln(&flag)
 			if err1 != nil {
 				fmt.Println("Error:", err1)
+			}
+			switch flag {
+			case 1:
+				flag = 0
+			case 0:
+				flag = 1
+			default:
+				fmt.Println("Error")
 			}
 		}
 	}
