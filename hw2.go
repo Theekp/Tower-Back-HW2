@@ -23,12 +23,18 @@ func main() {
 	var str string
 	fmt.Println("Your Tree: void")
 	fmt.Print("Your type of values, int(1)/string(0): ")
-	fmt.Scanln(&flag)
+	_, err := fmt.Scanln(&flag)
+	if err != nil {
+		fmt.Println("Error:", err)
+	}
 	if flag == 1 {
 
 		var tree *ibst
 		fmt.Print("Enter a list of your integers: ")
-		fmt.Scanln(&str)
+		_, err := fmt.Scanln(&str)
+		if err != nil {
+			fmt.Println("Error:", err)
+		}
 		fields := strings.Fields(str)
 
 		for _, field := range fields {
@@ -43,17 +49,26 @@ func main() {
 		for flag == 1 {
 			var a int
 			fmt.Print("What operation you want to do, insert(1)/IsExist(2)/delete(3): ")
-			fmt.Scanln(&a)
+			_, err := fmt.Scanln(&a)
+			if err != nil {
+				fmt.Println("Error:", err)
+			}
 			switch a {
 			case 1:
 				var b int
 				fmt.Print("Enter an integer: ")
-				fmt.Scanln(&b)
+				_, err := fmt.Scanln(&b)
+				if err != nil {
+					fmt.Println("Error:", err)
+				}
 				tree = ins1(tree, b)
 			case 2:
 				var b int
 				fmt.Print("Enter an integer: ")
-				fmt.Scanln(&b)
+				_, err := fmt.Scanln(&b)
+				if err != nil {
+					fmt.Println("Error:", err)
+				}
 				res := exist1(tree, b)
 				if res != nil {
 					fmt.Println("Integer %d is exist", b)
@@ -63,16 +78,77 @@ func main() {
 			case 3:
 				var b int
 				fmt.Print("Enter an integer: ")
-				fmt.Scanln(&b)
+				_, err := fmt.Scanln(&b)
+				if err != nil {
+					fmt.Println("Error:", err)
+				}
 				tree = del1(tree, b)
+			default:
+				fmt.Println("Invalid operation")
 			}
 			fmt.Print("if you want continue - 1, stop - 0: ")
-			fmt.Scanln(&flag)
+			_, err1 := fmt.Scanln(&flag)
+			if err1 != nil {
+				fmt.Println("Error:", err1)
+			}
 		}
 	} else {
+
 		var tree *sbst
+		fmt.Print("Enter a list of your strings: ")
+		_, err := fmt.Scanln(&str)
+		if err != nil {
+			fmt.Println("Error:", err)
+		}
+		fields := strings.Fields(str)
+
+		for _, field := range fields {
+			tree = ins2(tree, field)
+		}
+
 		for flag != 1 {
-			fmt.Println("Enter a list of your strings")
+			var a int
+			fmt.Print("What operation you want to do, insert(1)/IsExist(2)/delete(3): ")
+			_, err := fmt.Scanln(&a)
+			if err != nil {
+				fmt.Println("Error:", err)
+			}
+			switch a {
+			case 1:
+				var b string
+				fmt.Print("Enter an string: ")
+				_, err := fmt.Scanln(&b)
+				if err != nil {
+					fmt.Println("Error:", err)
+				}
+				tree = ins2(tree, b)
+			case 2:
+				var b string
+				fmt.Print("Enter an string: ")
+				_, err := fmt.Scanln(&b)
+				if err != nil {
+					fmt.Println("Error:", err)
+				}
+				res := exist2(tree, b)
+				if res != nil {
+					fmt.Printf("String %v is exist\n", b)
+				} else {
+					fmt.Printf("String %v is not exist\n", b)
+				}
+			case 3:
+				var b string
+				fmt.Print("Enter an string: ")
+				_, err := fmt.Scanln(&b)
+				if err != nil {
+					fmt.Println("Error:", err)
+				}
+				tree = del2(tree, b)
+			}
+			fmt.Print("if you want continue - 1, stop - 0: ")
+			_, err1 := fmt.Scanln(&flag)
+			if err1 != nil {
+				fmt.Println("Error:", err1)
+			}
 		}
 	}
 
@@ -90,7 +166,7 @@ func ins1(root *ibst, value int) *ibst {
 	return root
 }
 
-func ins2(root *sbst, value int) *sbst {
+func ins2(root *sbst, value string) *sbst {
 	if root == nil {
 		return &sbst{value: value}
 	}
@@ -103,7 +179,27 @@ func ins2(root *sbst, value int) *sbst {
 }
 
 func del1(root *ibst, value int) *ibst {
-
+	if root == nil {
+		return root
+	}
+	if value < root.value {
+		root.left = del1(root.left, value)
+	} else if value > root.value {
+		root.right = del1(root.right, value)
+	} else {
+		if root.left == nil && root.right == nil {
+			root = nil
+		} else if root.left == nil {
+			root = root.right
+		} else if root.right == nil {
+			root = root.left
+		} else {
+			min1 := min1(root.right)
+			root.value = min1.value
+			root.right = del1(root.right, min1.value)
+		}
+	}
+	return root
 }
 
 func exist1(root *ibst, value int) *ibst {
@@ -118,10 +214,54 @@ func exist1(root *ibst, value int) *ibst {
 	}
 }
 
-func del2() {
-
+func del2(root *sbst, value string) *sbst {
+	if root == nil {
+		return root
+	}
+	if value < root.value {
+		root.left = del2(root.left, value)
+	} else if value > root.value {
+		root.right = del2(root.right, value)
+	} else {
+		if root.left == nil && root.right == nil {
+			root = nil
+		} else if root.left == nil {
+			root = root.right
+		} else if root.right == nil {
+			root = root.left
+		} else {
+			min2 := min2(root.right)
+			root.value = min2.value
+			root.right = del2(root.right, min2.value)
+		}
+	}
+	return root
 }
 
-func exist2() {
+func exist2(root *sbst, value string) *sbst {
+	if root == nil || root.value == value {
+		return root
+	}
 
+	if value < root.value {
+		return exist2(root.left, value)
+	} else {
+		return exist2(root.right, value)
+	}
+}
+
+func min1(root *ibst) *ibst {
+	current := root
+	for current.left != nil {
+		current = current.left
+	}
+	return current
+}
+
+func min2(root *sbst) *sbst {
+	current := root
+	for current.left != nil {
+		current = current.left
+	}
+	return current
 }
